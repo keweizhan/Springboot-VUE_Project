@@ -68,7 +68,7 @@ public class SecurityConfiguration {
     }
 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=utf-8");
         request.setCharacterEncoding("UTF-8");
         User user = (User) authentication.getPrincipal();
         Account account = service.findAccountByNameOrEmail(user.getUsername());
@@ -82,7 +82,7 @@ public class SecurityConfiguration {
 
 
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=utf-8");
         response.getWriter().write("Logout successful");
         PrintWriter writer = response.getWriter();
         String authorization = request.getHeader("Authorization");
@@ -95,20 +95,20 @@ public class SecurityConfiguration {
     }
 
     public void onUnauthorized(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(RestBean.unauthorized(exception.getMessage()).asJsonString());
     }
 
     public void onAccessDenied(HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception) throws IOException {
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(RestBean.forbidden(exception.getMessage()).asJsonString());
     }
 
 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=utf-8");
         request.setCharacterEncoding("UTF-8");
-        response.getWriter().write(RestBean.unauthorized(exception.getMessage()).asJsonString());
+        response.getWriter().write(RestBean.unauthorized("Username or password is wrong").asJsonString());
     }
 
 }

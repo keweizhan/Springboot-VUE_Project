@@ -16,7 +16,7 @@ function takeAccessToken() {
     const str = localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName)
     if (!str) return null;
     const authToken = JSON.parse(str)
-    if (authToken.expiresAt <= new Date()){
+    if (authToken.expire <= new Date()){
         deleteAccessToken()
         ElMessage.warning("Your session has expired. Please log in again.")
         return null
@@ -25,8 +25,8 @@ function takeAccessToken() {
 }
 
 
-function storeAccessToken(token, remember, expiresAt) {
-    const authObj = {token: token, expiresAt: expiresAt}
+function storeAccessToken(token, remember, expire) {
+    const authObj = {token: token, expire: expire}
     const str = JSON.stringify(authObj)
     if (remember) {
         localStorage.setItem(authItemName, str)
@@ -44,7 +44,7 @@ function internalPost(url, data,header,success,failure, error = defaultError){
         if(data.code === 200){
             success(data.data);
         } else{
-            failure(data.message, data.code, url);
+            failure(data.msg, data.code, url);
         }
     }).catch(err => error(err))
 }
@@ -66,8 +66,8 @@ function login(username,password,remember, success, failure = defaultFailure){
     },{
         'Content-Type': 'application/x-www-form-urlencoded'
     },(data) => {
-        storeAccessToken(remember, data.token, data.expiresAt);
-        ElMessage.success('Login successful!, Welcome, ${data.username}!')
+        storeAccessToken(data.token, remember, data.expire);
+        ElMessage.success(`Login successful!, Welcome, ${data.username}!`)
         success(data)
     }, failure);
 }
