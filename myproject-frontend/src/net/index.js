@@ -1,0 +1,75 @@
+import axios from "axios";
+import {ElMessage} from "element-plus";
+
+const authItemName = "access_token"
+
+const defaultFailure = (message, code, url) => {
+    console.warn(`Request address: ${url}, code: ${code}, Error: ${message}`)
+    ElMessage.warning(message)
+}
+const defaultError = (err) => {
+    console.error(err)
+    ElMessage.warning("An error has occurred. Please contact the administrator.")
+}
+
+function takeAccessToken() {
+    const str = localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName)
+    if (!str) return null;
+    const authToken = JSON.parse(str)
+    if (authToken.expiresAt <= new Date()){
+        deleteAccessToken()
+        ElMessage.warning("Your session has expired. Please log in again.")
+        return null
+    }
+    return authToken.token
+}
+
+
+function storeAccessToken(token, remember, expiresAt) {
+    const authObj = {token: token, expiresAt: expiresAt}
+    const str = JSON.stringify(authObj)
+    if (remember) {
+        localStorage.setItem(authItemName, str)
+    } else {
+        sessionStorage.setItem(authItemName, str)
+    }
+}
+
+function deleteAccessToken() {
+    localStorage.removeItem(authItemName)
+    sessionStorage.removeItem(authItemName)
+}
+function internalPost(url, data,header,success,failure, error = defaultError){
+    axios.post(url, data,{headers: header }).then(({data}) => {
+        if(data.code === 200){
+            success(data.data);
+        } else{
+            failure(data.message, data.code, url);
+        }
+    }).catch(err => error(err))
+}
+
+function internalGet(url, header,success,failure, error = defaultError){
+    axios.get(url, {headers: header }).then(({data}) => {
+        if(data.code === 200){
+            success(data.data);
+        } else{
+            failure(data.message, data.code, url);
+        }
+    }).catch(err => error(err))
+}
+
+function login(username,password,remember, success, failure = defaultFailure){
+    internalPost('api/auth/login',{
+        username: username,
+        password: password
+    },{
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },(data) => {
+        storeAccessToken(remember, data.token, data.expiresAt);
+        ElMessage.success('Login successful!, Welcome, ${data.username}!')
+        success(data)
+    }, failure);
+}
+
+export {login}
