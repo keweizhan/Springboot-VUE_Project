@@ -83,7 +83,6 @@ public class SecurityConfiguration {
 
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.setContentType("application/json;charset=utf-8");
-        response.getWriter().write("Logout successful");
         PrintWriter writer = response.getWriter();
         String authorization = request.getHeader("Authorization");
         if(utils.invalidJwt(authorization)){

@@ -35,6 +35,21 @@ function storeAccessToken(token, remember, expire) {
     }
 }
 
+function accessHeader(){
+    const token = takeAccessToken();
+    return token ?{
+        'Authorization': `Bearer ${token}`
+    } : {}
+}
+
+function get(url, success, failure = defaultFailure) {
+    internalGet(url, accessHeader(), success, failure)
+}
+
+
+function post(url, data, success, failure = defaultFailure) {
+    internalPost(url, data,accessHeader(), success, failure)
+}
 function deleteAccessToken() {
     localStorage.removeItem(authItemName)
     sessionStorage.removeItem(authItemName)
@@ -72,4 +87,16 @@ function login(username,password,remember, success, failure = defaultFailure){
     }, failure);
 }
 
-export {login}
+function logout(success, failure = defaultFailure) {
+    get('api/auth/logout', () => {
+        deleteAccessToken()
+        ElMessage.success("Logout successful!")
+        success()
+    }, failure)
+}
+
+function unauthorized() {
+    return !takeAccessToken()
+}
+
+export {login, logout, get, post, unauthorized};
