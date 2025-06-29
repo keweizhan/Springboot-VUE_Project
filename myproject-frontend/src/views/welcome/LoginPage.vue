@@ -56,7 +56,7 @@ function userLogin(){
             </el-form-item>
           </el-col>
           <el-col :span="12" style="text-align: right">
-            <el-link>Forget Password</el-link>
+            <el-link @click="router.push('/reset')">Forget Password</el-link>
           </el-col>
         </el-row>
       </el-form>
@@ -69,7 +69,7 @@ function userLogin(){
         <span style="font-size: 13px;color: gray">Not a Member</span>
       </el-divider>
       <div>
-        <el-button style="width: 270px" type="warning" plain>Sign up</el-button>
+        <el-button @click="router.push('/register')" style="width: 270px" type="warning" plain>Sign up</el-button>
       </div>
     </div>
   </div>
