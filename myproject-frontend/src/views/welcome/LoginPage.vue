@@ -35,7 +35,7 @@ function userLogin(){
     <div style="margin-top: 50px">
       <el-form :model="form" :rules="rule" ref = "formRef">
         <el-form-item prop="username">
-          <el-input v-model="form.username" maxlength="10" type="text" placeholder="Username/Email">
+          <el-input v-model="form.username"  type="text" placeholder="Username/Email">
             <template #prefix>
               <el-icon><User/></el-icon>
             </template>
