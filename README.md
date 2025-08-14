@@ -48,3 +48,7 @@ Includes **user registration, user login, password reset** pages, and a simple h
 2. Install dependencies:
    ```bash
    npm install
+3. Start the development server:
+   ```bash
+   npm run dev
+
